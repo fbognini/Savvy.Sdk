@@ -8,11 +8,13 @@ using Savvy.Sdk.Models;
 using Savvy.Sdk.Requests;
 using Savvy.Sdk.Endpoints;
 using System.Net.Http.Headers;
+using fbognini.Sdk.Handlers;
 
 namespace Savvy.Sdk
 {
-    public interface ISavvyApiPaymentService
+    public interface ISavvyApiService
     {
+        Task<bool> IsAuthenticated();
         Task<TokenResponse> Authenticate(GetTokenRequest request);
         Task<TokenResponse> GetToken(GetTokenRequest request);
         Task<InitializeVirtualCardResponse> InitializeVirtualCard(InitializeVirtualCardRequest request);
@@ -21,19 +23,21 @@ namespace Savvy.Sdk
         Task<RefundResponse> Refund(RefundRequest request);
     }
 
-    internal class SavvyApiPaymentService : BaseApiService, ISavvyApiPaymentService
+    internal class SavvyApiService : BaseApiService, ISavvyApiService
     {
         private readonly SavvyApiSettings settings;
         private new SavvyCurrentUserService? currentUserService;
 
-        public SavvyApiPaymentService(HttpClient client, ILogger<SavvyApiPaymentService> logger, IOptions<SavvyApiSettings> options)
-            : base(client, logger, httpErrorHandler: null, currentUserService: null)
+        public SavvyApiService(HttpClient client, ILogger<SavvyApiService> logger, IOptions<SavvyApiSettings> options)
+            : base(client, logger, currentUserService: null)
         {
             this.settings = options.Value;
 
             client.BaseAddress = new Uri(settings.ApiUrl);
             client.DefaultRequestHeaders.Add("Connect-Direct-Subscription-Key", settings.SubscriptionKey);
         }
+
+        public async Task<bool> IsAuthenticated() => currentUserService != null && await currentUserService.IsAuthenticated();
 
         public async Task<TokenResponse> Authenticate(GetTokenRequest request)
         {
@@ -56,13 +60,8 @@ namespace Savvy.Sdk
 
         public async Task<BalanceResponse> ValidatePromoCode(ValidatePromoCodeRequest request)
         {
-            var options = new RequestOptions()
-            {
-                Headers = new Dictionary<string, IEnumerable<string>>
-                {
-                    ["ActivatingMID-ON"] = new[] { "true" }
-                }
-            };
+            var options = new RequestOptions();
+            options.Headers.Add("ActivatingMID-ON", "true");
 
             request.AuthenticateRequest(currentUserService!);
 
@@ -71,13 +70,8 @@ namespace Savvy.Sdk
 
         public async Task<InitializeVirtualCardResponse> InitializeVirtualCard(InitializeVirtualCardRequest request)
         {
-            var options = new RequestOptions()
-            {
-                Headers = new Dictionary<string, IEnumerable<string>>
-                {
-                    ["ActivatingMID-ON"] = new[] { "true" }
-                }
-            };
+            var options = new RequestOptions();
+            options.Headers.Add("ActivatingMID-ON", "true");
 
             request.AuthenticateRequest(currentUserService!);
 

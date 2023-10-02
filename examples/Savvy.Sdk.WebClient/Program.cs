@@ -24,14 +24,14 @@ app.UseHttpsRedirection();
 // emulate "authenticate" logig
 GetTokenRequest? defaultGetTokenRequest = null;
 
-app.MapPost("/token", async (GetTokenRequest request, ISavvyApiPaymentService savvyApiPaymentService) =>
+app.MapPost("/token", async (GetTokenRequest request, ISavvyApiService savvyApiPaymentService) =>
 {
     return await savvyApiPaymentService.GetToken(request);
 })
 .WithName("GetToken")
 .WithOpenApi();
 
-app.MapPost("/authenticate", async (GetTokenRequest request, ISavvyApiPaymentService savvyApiPaymentService) =>
+app.MapPost("/authenticate", async (GetTokenRequest request, ISavvyApiService savvyApiPaymentService) =>
 {
     defaultGetTokenRequest = request;
 
@@ -40,7 +40,7 @@ app.MapPost("/authenticate", async (GetTokenRequest request, ISavvyApiPaymentSer
 .WithName("Authenticate")
 .WithOpenApi();
 
-app.MapPost("/new-card", async (InitializeVirtualCardRequest request, ISavvyApiPaymentService savvyApiPaymentService) =>
+app.MapPost("/new-card", async (InitializeVirtualCardRequest request, ISavvyApiService savvyApiPaymentService) =>
 {
     await savvyApiPaymentService.Authenticate(defaultGetTokenRequest!);
 

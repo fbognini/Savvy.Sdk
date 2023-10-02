@@ -4,16 +4,27 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.1.0</Version>
+    <Authors>Francesco Bognini</Authors>
+    <Company>Francesco Bognini</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/fbognini/Savvy.Sdk</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fbognini/Savvy.Sdk</RepositoryUrl>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="fbognini.Sdk" Version="2.1.1" />
+    <PackageReference Include="fbognini.Sdk" Version="2.4.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
