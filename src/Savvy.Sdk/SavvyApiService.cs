@@ -28,8 +28,8 @@ namespace Savvy.Sdk
         private readonly SavvyApiSettings settings;
         private new SavvyCurrentUserService? currentUserService;
 
-        public SavvyApiService(HttpClient client, ILogger<SavvyApiService> logger, IOptions<SavvyApiSettings> options)
-            : base(client, logger, currentUserService: null)
+        public SavvyApiService(HttpClient client, IOptions<SavvyApiSettings> options)
+            : base(client)
         {
             this.settings = options.Value;
 
@@ -53,9 +53,7 @@ namespace Savvy.Sdk
 
         public async Task<TokenResponse> GetToken(GetTokenRequest request)
         {
-            var uurca = await PostApi<GetTokenRequest>(AuthenticationEndpoints.GetToken(), request);
-
-            return await PostApi<TokenResponse, GetTokenRequest>(AuthenticationEndpoints.GetToken(), request);
+            return await PostApiAsync<TokenResponse, GetTokenRequest>(AuthenticationEndpoints.GetToken(), request);
         }
 
         public async Task<BalanceResponse> ValidatePromoCode(ValidatePromoCodeRequest request)
@@ -65,7 +63,7 @@ namespace Savvy.Sdk
 
             request.AuthenticateRequest(currentUserService!);
 
-            return await PostApi<BalanceResponse, ValidatePromoCodeRequest>(PaymentEndpoints.GetBalance(), request, options);
+            return await PostApiAsync<BalanceResponse, ValidatePromoCodeRequest>(PaymentEndpoints.GetBalance(), request, options);
         }
 
         public async Task<InitializeVirtualCardResponse> InitializeVirtualCard(InitializeVirtualCardRequest request)
@@ -75,20 +73,20 @@ namespace Savvy.Sdk
 
             request.AuthenticateRequest(currentUserService!);
 
-            return await PostApi<InitializeVirtualCardResponse, InitializeVirtualCardRequest>(PaymentEndpoints.InitializeVirtualCard(), request, options);
+            return await PostApiAsync<InitializeVirtualCardResponse, InitializeVirtualCardRequest>(PaymentEndpoints.InitializeVirtualCard(), request, options);
         }
 
         public async Task<PayResponse> Pay(PayRequest request)
         {
             request.AuthenticateRequest(currentUserService!);
-            return await PostApi<PayResponse, PayRequest>(PaymentEndpoints.Redeem(), request);
+            return await PostApiAsync<PayResponse, PayRequest>(PaymentEndpoints.Redeem(), request);
         }
 
         public async Task<RefundResponse> Refund(RefundRequest request)
         {
             request.AuthenticateRequest(currentUserService!);
 
-            return await PostApi<RefundResponse, RefundRequest>(PaymentEndpoints.Refund(), request);
+            return await PostApiAsync<RefundResponse, RefundRequest>(PaymentEndpoints.Refund(), request);
         }
     }
 }
